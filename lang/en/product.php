@@ -1,0 +1,32 @@
+<?php
+
+return [
+    'base_unit' => 'Base Unit',
+    'operator' => 'Operator',
+    'parent_category' => 'Parent Category',
+    'operator_value' => 'Operator Value',
+    'product_type' => 'Product Type',
+    'standard' => 'Standard Product',
+    'variant' => 'Variant Product',
+    'service' => 'Service',
+    'product_images' => 'Product Images',
+    'price' => 'Price',
+    'sell_unit' => 'Sell Unit',
+    'cost' => 'Cost',
+    'stock_alert' => 'Stock Alert',
+    'purchase_unit' => 'Purchase Unit',
+    'sku' => 'SKU',
+    'stock_control' => 'Stock Control',
+    'product_unit' => 'Product Unit',
+    'enable_stock_control' => 'Enable Stock Control',
+    'alert_min_stock' => 'Alert Minimum Stock',
+    'variant_name'=> 'Variant :no Name',
+    'variant_value'=> 'Variant :no Option',
+    'enable_var2' => 'Enable Variant 2',
+    'disable_var2' => 'Disable Variant 2',
+    'barcode_symbology' => 'Barcode Symbology',
+    'stock' => 'Stock',
+    'purchased' => 'Purchased',
+    'sold' => 'Sold',
+    'history' => 'History'
+];

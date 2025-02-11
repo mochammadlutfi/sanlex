@@ -1,0 +1,37 @@
+{
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build"
+    },
+    "devDependencies": {
+        "@iconify/vue": "^4.1.2",
+        "@inertiajs/vue3": "^1.0.0",
+        "@vitejs/plugin-vue": "^5.0.0",
+        "@vue/server-renderer": "^3.4.0",
+        "autoprefixer": "^10.4.20",
+        "axios": "^1.7.8",
+        "laravel-vite-plugin": "^1.0",
+        "postcss": "^8.5.1",
+        "sass": "^1.77.5",
+        "tailwindcss": "^3.4.17",
+        "unplugin-auto-import": "^0.18.3",
+        "unplugin-vue-components": "^0.27.4",
+        "vite": "^5.0",
+        "vue": "^3.4.0"
+    },
+    "dependencies": {
+        "@nuxt/devtools": "^1.6.3",
+        "@tanstack/vue-query": "^5.66.0",
+        "dayjs": "^1.11.13",
+        "element-plus": "^2.8.7",
+        "js-cookie": "^3.0.5",
+        "laravel-vue-i18n": "^2.7.7",
+        "pinia": "^2.2.2",
+        "vue-advanced-cropper": "^2.8.9",
+        "vue-cropper": "^0.6.5",
+        "vue-cropperjs": "^5.0.0",
+        "vue-currency-input": "^3.1.0"
+    }
+}
