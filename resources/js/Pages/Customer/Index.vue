@@ -3,14 +3,10 @@
         <div class="content">
             <div class="content-header">
                 <div class="mt-auto mb-0">
-                    <div class="text-lg font-semibold">{{ $t('base.customer') }}</div>
+                    <div class="text-lg font-semibold">Customer</div>
                 </div>
                 <div class="mt-auto mb-0">
-                    <el-breadcrumb separator="/">
-                        <el-breadcrumb-item :to="{ path: '/dashboard' }">{{ $t('base.dashboard') }}
-                        </el-breadcrumb-item>
-                        <el-breadcrumb-item>{{ $t('base.customer') }}</el-breadcrumb-item>
-                    </el-breadcrumb>
+
                 </div>
             </div>
 
@@ -48,8 +44,21 @@
                         <el-table class="min-w-full" :data="data.data" @sort-change="sortChange"
                             @selection-change="onSelectionChange">
                             <el-table-column type="selection" width="55" />
+                            <el-table-column prop="branch.name" label="Cabang" sortable/>
                             <el-table-column prop="name" :label="$t('common.name')" sortable/>
-                            <el-table-column prop="address" :label="$t('common.address')" sortable/>
+                            <el-table-column prop="email" :label="$t('common.email')" sortable/>
+                            <el-table-column :label="$t('common.address')" width="300" sortable>
+                                <template #default="scope">
+                                    <template v-if="scope.row.address.length">
+                                        <div>{{ scope.row.address[0].address }}, {{ scope.row.address[0].pos }}</div>
+                                        <div>
+                                            {{ scope.row.address[0].kelurahan.name }}, {{ scope.row.address[0].kecamatan.name }}
+                                            {{ scope.row.address[0].kota.name }}, {{ scope.row.address[0].provinsi.name }}
+                                        </div>
+                                    </template>
+                                    <span v-else>-</span>
+                                </template>
+                            </el-table-column>
                             <el-table-column :label="$t('common.action')" align="center" width="150">
                                 <template #default="scope">
                                     <el-dropdown popper-class="dropdown-action" trigger="click">
@@ -58,10 +67,11 @@
                                         </el-button>
                                         <template #dropdown>
                                             <el-dropdown-menu>
-                                                <el-dropdown-item class="flex justify-between"
-                                                    @click.prevent="onEdit(scope.row)">
-                                                    <Icon icon="mingcute:edit-line" class="me-2" />
-                                                    {{ $t('common.edit') }}
+                                                <el-dropdown-item class="flex justify-between">
+                                                    <Link :href="`/customer/${ scope.row.id }/edit`">
+                                                        <Icon icon="mingcute:edit-line" class="me-2" />
+                                                        {{ $t('common.edit') }}
+                                                    </Link>
                                                 </el-dropdown-item>
                                                 <el-dropdown-item class="flex justify-between"
                                                     @click.prevent="onDelete(scope.row.id)">

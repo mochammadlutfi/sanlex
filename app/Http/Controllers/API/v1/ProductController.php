@@ -8,6 +8,8 @@ use App;
 use App\Models\Product\Product;
 use App\Models\Product\Category;
 use App\Models\Product\Brand;
+use App\Http\Resources\Product\ProductListResource;
+
 class ProductController extends Controller
 {
     /**
@@ -21,10 +23,9 @@ class ProductController extends Controller
         $sortDir = !empty($request->sortDir) ? $request->sortDir : 'desc';
 
         $id = $request->id;
-        $search = $request->s;
-        $locale = $request->locale  ?? 'id';
+        $locale = $request->locale ?? 'id';
 
-        $query = Product::with(['brand', 'category'])
+        $query = Product::with(['brand', 'category', 'prices'])
         ->when($request->id, function($query, $id){
             $query->where('product.id', '=', $id);
         })
@@ -36,16 +37,23 @@ class ProductController extends Controller
             if($request->limit == 1){
                 $data = $query->first();
             }else{
-                $data = $query->paginate($request->limit);
+                $paginatedData = $query->paginate($request->limit);
+                $data = [
+                    'data' => ProductListResource::collection($paginatedData->items()),
+                    'current_page' => $paginatedData->currentPage(),
+                    'last_page' => $paginatedData->lastPage(),
+                    'per_page' => $paginatedData->perPage(),
+                    'total' => $paginatedData->total(),
+                ];
             }
         }else{
-            $data = $query->get();
+            $data = ProductListResource::collection($query->get());
         }
         
         return response()->json([
             'status' => true,
             'message' => 'Data Berhasil',
-            'payload' => $data
+            'result' => $data
         ], 200);
     }
 
@@ -71,19 +79,18 @@ class ProductController extends Controller
         
         $sort = !empty($request->sort) ? $request->sort : 'id';
         $sortDir = !empty($request->sortDir) ? $request->sortDir : 'desc';
-        $limit = ($request->limit) ? $request->limit : 25;
 
         $id = $request->id;
-        $search = $request->search;
         $tree = $request->tree;
         $parentonly = $request->parentonly;
-        // dd($request->all());
-        App::setLocale($request->locale);
+        $locale = $request->locale ?? 'id';
+
+        App::setLocale($locale);
 
         $query = Category::when($id, function($query, $id){
             $query->where('id', '=', $id);
         })
-        ->when($search, function($query, $search){
+        ->when($request->search, function($query, $search){
             $query->where('product.name', '=', $search);
         })
         ->when($parentonly, function($query, $parentonly){
@@ -91,12 +98,14 @@ class ProductController extends Controller
         })
         ->withCount(['product']);
 
-        if($limit == 1){
-            $data = $query->first();
-        }else{
-            if($request->page){
+        if($request->limit){
+            if($request->limit == 1){
+                $data = $query->first();
+            }else{
                 $data = $query->paginate($limit);
-            }elseif($tree == 1){
+            }
+        }else{
+            if($tree == 1){
                 $q2 = $query->get()->toTree();
                 $data = $q2->map(function ($d) {
                     return collect($d->toArray())
@@ -108,7 +117,11 @@ class ProductController extends Controller
             }
         }
         
-        return response()->json($data);
+        return response()->json([
+            'status' => true,
+            'message' => 'Data Berhasil',
+            'result' => $data
+        ], 200);
     }
 
     /**
@@ -145,6 +158,10 @@ class ProductController extends Controller
             }
         }
         
-        return response()->json($data);
+        return response()->json([
+            'status' => true,
+            'message' => 'Data Berhasil',
+            'result' => $data
+        ], 200);
     }
 }

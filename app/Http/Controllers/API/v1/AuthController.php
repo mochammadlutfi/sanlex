@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Hash;
 use Carbon\Carbon;
 use App\Models\Customer;
+use Browser;
 
 class AuthController extends Controller
 {
@@ -59,21 +60,8 @@ class AuthController extends Controller
                         'email' => $user->email,
                         'phone' => $user->phone,
                         'branch' => $user->branch,
-                        'token' => $user->createToken('auth-sales')->plainTextToken,
+                        'token' => $user->createToken('auth-customer')->plainTextToken,
                     ];
-                    $browser = Browser::parse($request->userAgent());
-                    $device = $browser->platformName() . ' / ' . $browser->browserName();
-            
-                    $sanctumToken = $user->createToken(
-                        $device,
-                        ['*'],
-                        $request->remember ?
-                            now()->addMonth() :
-                            now()->addDay()
-                    );
-            
-                    $sanctumToken->accessToken->ip = $request->ip();
-                    $sanctumToken->accessToken->save();
 
                     return response()->json([
                         'success' => true,
@@ -83,9 +71,9 @@ class AuthController extends Controller
     
                 } else {
                     return response()->json([
-                        'success' => false, 
-                        'message' => 'Password Salah!', 
-                        'result' => null
+                        'success' => false,
+                        'message' => 'Field invalid',
+                        'result' => ['password' => 'Password Salah!'] 
                     ], 401);
 
                 }

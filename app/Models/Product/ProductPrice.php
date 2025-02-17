@@ -18,6 +18,10 @@ class ProductPrice extends Model
         'product_id', 'variant_id', 'branch_id', 'price'
     ];
 
+    protected $casts = [
+        'price' => 'float',
+    ];
+
     public function product()
     {
         return $this->belongsTo(Product::class, 'product_id');

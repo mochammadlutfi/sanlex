@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 use App\Models\Customer;
+use App\Models\CustomerAddress;
 class CustomerController extends Controller
 {
     
@@ -68,17 +69,30 @@ class CustomerController extends Controller
 
             $data = Customer::where('id', $id)->first();
             $data->name = $request->name;
-            $data->province_id = $request->province_id;
-            $data->city_id = $request->city_id;
+            $data->email = $request->email;
             $data->phone = $request->phone;
-            $data->address = $request->address;
-            $data->lat = $request->lat;
-            $data->lng = $request->lng;
-            $data->key = $request->key;
-            $data->code = $request->code;
+            $data->mobile = $request->mobile;
+            $data->branch_id = $request->branch_id;
             $data->ref = $request->ref;
-            $data->server = $request->server_link;
             $data->save();
+
+            foreach($request->address as $key => $value){
+
+                $address = CustomerAddress::firstOrNew([
+                    'customer_id' => $data->id,
+                    'prov_id' => $value['prov']['id'],
+                    'kota_id' => $value['kota']['id'],
+                    'kec_id' => $value['kec']['id'],
+                    'kel_id' => $value['kel']['id'],
+                    'address' =>  $value['address'],
+                    'lat' => $value['lat'],
+                    'lng' => $value['lng'],
+                    'is_main' => $value['is_main'] == 'true' ? 1 : 0,
+                    'pos' => $value['postal_code']
+                ]);
+                $address->save();
+
+            }
 
         }catch(\QueryException $e){
             DB::rollback();
@@ -95,7 +109,9 @@ class CustomerController extends Controller
     }
 
     public function edit($id){
-        $data = Customer::where('id', $id)->first();
+        $data = Customer::with(['address' => function($q){
+            return $q->with(['provinsi', 'kota', 'kecamatan', 'kelurahan']);
+        }])->where('id', $id)->first();
 
         return Inertia::render('Customer/Form',[
             'data' => $data
@@ -131,7 +147,11 @@ class CustomerController extends Controller
         $sortDir = !empty($request->sortDir) ? $request->sortDir : 'desc';
         $limit = ($request->limit) ? $request->limit : 25;
 
-        $query = Customer::when($request->search, function($q, $search){
+        $query = Customer::with(['branch', 'address' => function($q){
+            return $q->with(['provinsi', 'kota', 'kecamatan', 'kelurahan'])
+            ->where('is_main', 1);
+        }])
+        ->when($request->search, function($q, $search){
             $query->where('name', 'like', '%' . $search . '%');
         });
         

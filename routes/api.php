@@ -36,13 +36,22 @@ Route::namespace('App\Http\Controllers\API')->name('api.')->group(function () {
         Route::post('/login','AuthController@login')->name('login');
         Route::post('/logout','AuthController@logout')->name('logout');
 
-        
-        Route::prefix('/product')->name('product.')->group(function () {
+        Route::group(['middleware' => ['auth:sanctum']], function () {
+            Route::prefix('/profile')->name('profile.')->group(function () {
+                Route::get('/', 'ProfileController@index')->name('index');
+                Route::post('/update','ProfileController@update')->name('update');
+                Route::post('/password','ProfileController@password')->name('password');
+                Route::get('/device', 'ProfileController@device')->name('device');
+                Route::post('/device/disconect','ProfileController@deviceDisconnect')->name('device.disconect');
+            });
             
-            Route::get('/', 'ProductController@index')->name('index');
-            Route::get('/category', 'ProductController@category')->name('category');
-            Route::get('/brand', 'ProductController@brand')->name('brand');
-            Route::get('/{slug}', 'ProductController@show')->name('show');
+            Route::prefix('/product')->name('product.')->group(function () {
+                
+                Route::get('/', 'ProductController@index')->name('index');
+                Route::get('/category', 'ProductController@category')->name('category');
+                Route::get('/brand', 'ProductController@brand')->name('brand');
+                Route::get('/{slug}', 'ProductController@show')->name('show');
+            });
         });
 
         Route::get('/certification', 'BaseController@certification')->name('certification');

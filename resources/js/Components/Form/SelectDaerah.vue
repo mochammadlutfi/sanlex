@@ -13,7 +13,7 @@
             v-for="item in dataList"
             :key="item.id"
             :label="item.name"
-            :value="item.id"
+            :value="item"
         />
     </el-select>
 </template>
@@ -26,8 +26,8 @@ const emit = defineEmits(['update:modelValue'])
 // Define props
 const props = defineProps({
     modelValue: {
-        type: [String, Number],
-        default: ''
+        type: Object,
+        default: null
     },
     placeholder: {
         type: String,

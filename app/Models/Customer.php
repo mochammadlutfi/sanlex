@@ -19,6 +19,8 @@ class Customer extends Authenticatable
         'name',
         'email',
         'phone',
+        'mobile',
+        'ref'
     ];
 
     /**
@@ -39,4 +41,15 @@ class Customer extends Authenticatable
     protected $casts = [
         'password' => 'hashed',
     ];
+
+    
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class, 'branch_id');
+    }
+    
+    public function address()
+    {
+        return $this->hasMany(CustomerAddress::class, 'customer_id');
+    }
 }
