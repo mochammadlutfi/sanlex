@@ -112,6 +112,28 @@ return [
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
+        
+        'server18' => [
+            'driver' => 'pgsql',
+            'url' => env('DATABASE_URL'),
+            'host' => '10.180.184.18',
+            'port' => '5432',
+            'database' => 'ORANGE',
+            'username' => 'lutfi',
+            'password' => 'lutfi.mis',
+        ],
+
+        'server25' => [
+            'driver' => 'pgsql',
+            'url' => env('DATABASE_URL'),
+            'host' => '10.180.184.25',
+            'port' => '5432',
+            'database' => 'ORANGE',
+            'username' => 'odoo',
+            'password' => 'admin.mis',
+        ],
+
+
     ],
 
     /*

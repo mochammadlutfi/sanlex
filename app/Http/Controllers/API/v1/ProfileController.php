@@ -15,14 +15,27 @@ use App\Models\Customer;
 
 class ProfileController extends Controller
 {
+    // public function __construct()
+    // {
+    //     $this->middleware('auth:api');
+    // }
+
     /**
      * Display the user's profile form.
      */
-    public function index(Request $request): JsonResponse
+    public function index(Request $request)
     {
-        $id = auth()->user()->id;
-
-        $data = Customer::with(['branch'])->where('id', $id)->first();
+        // dd('auth:sanctum');
+        // return response()->json('sadas');
+        $user = Customer::with(['branch'])->where('id', auth()->user()->id)->first();
+        
+        $data = [
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'branch' => $user->branch,
+        ];
         
         return response()->json([
             'success' => true,

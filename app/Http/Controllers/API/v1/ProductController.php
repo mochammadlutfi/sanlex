@@ -9,6 +9,7 @@ use App\Models\Product\Product;
 use App\Models\Product\Category;
 use App\Models\Product\Brand;
 use App\Http\Resources\Product\ProductListResource;
+use App\Http\Resources\Product\ProductDetailResource;
 
 class ProductController extends Controller
 {
@@ -51,22 +52,31 @@ class ProductController extends Controller
         }
         
         return response()->json([
-            'status' => true,
+            'success' => true,
             'message' => 'Data Berhasil',
             'result' => $data
         ], 200);
     }
 
 
-    public function show(Request $request, $slug)
+    public function show(Request $request, $id)
     {
-        App::setLocale($request->locale);
-        $data = Product::
-        where('slug', $slug)
-        ->with(['color', 'brand', 'category'])
-        ->first();
+        // dd($id);
+        $data = Product::with(['variant' => function($q){
+            return $q->with(['packaging', 'color']);
+        }])->where('id', $id)->first();
         
-        return response()->json($data, 200);
+        if(!$data){
+            return response()->json([
+                'success' => false,
+                'message' => 'Produk tidak ditemukan',
+            ], 404);
+        }
+        
+        return response()->json([
+            'success' => false,
+            'result' => new ProductDetailResource($data)
+        ], 200);
     }
 
     /**
@@ -118,7 +128,7 @@ class ProductController extends Controller
         }
         
         return response()->json([
-            'status' => true,
+            'success' => true,
             'message' => 'Data Berhasil',
             'result' => $data
         ], 200);
@@ -159,7 +169,7 @@ class ProductController extends Controller
         }
         
         return response()->json([
-            'status' => true,
+            'success' => true,
             'message' => 'Data Berhasil',
             'result' => $data
         ], 200);

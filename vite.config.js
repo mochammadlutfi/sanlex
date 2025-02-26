@@ -7,15 +7,15 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import i18n from 'laravel-vue-i18n/vite';
 
 export default defineConfig({
-    server: {
-      hmr: {
-        host: 'sanlex.local',
-      },
-      https: {
-          key: 'D:/laragon/etc/ssl/laragon.key',
-          cert: 'D:/laragon/etc/ssl/laragon.crt',
-      },
-    },
+    // server: {
+    //   hmr: {
+    //     host: 'sanlex.local',
+    //   },
+    //   https: {
+    //       key: 'D:/laragon/etc/ssl/laragon.key',
+    //       cert: 'D:/laragon/etc/ssl/laragon.crt',
+    //   },
+    // },
     plugins: [
         laravel({
             input: [
