@@ -1,0 +1,1 @@
+function s(){return{objectToFormData:t=>{const a=new FormData;for(const n in t){const e=t[n];Array.isArray(e)?n==="images"&&e.every(o=>o instanceof File)?e.forEach((o,i)=>{a.append(`${n}[${i}]`,o)}):a.append(n,JSON.stringify(e)):e instanceof File?a.append(n,e):typeof e=="object"&&e!==null?a.append(n,JSON.stringify(e)):e!==void 0&&a.append(n,e)}return a}}}export{s as u};

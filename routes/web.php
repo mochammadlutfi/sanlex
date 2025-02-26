@@ -172,7 +172,7 @@ Route::namespace('App\Http\Controllers\Panel')->group(function()
                 Route::get('/data', 'MediaController@data')->name('data');
             });
             
-            // Route::namespace('Project')->prefix('/project')->name('project.')->group(function () {
+            Route::namespace('Project')->prefix('/project')->name('project.')->group(function () {
 
             //     Route::prefix('/portofolio')->name('portofolio.')->group(function () {
             //         Route::get('/', 'PortofolioController@index')->name('index');
@@ -186,19 +186,17 @@ Route::namespace('App\Http\Controllers\Panel')->group(function()
             //         Route::delete('/{id}/delete','PortofolioController@destroy')->name('delete');
             //     });
                 
-            //     Route::prefix('/contact')->name('contact.')->group(function () {
-            //         Route::get('/', 'ContactController@index')->name('index');
-            //         Route::get('/create', 'ContactController@create')->name('create');
-            //         Route::post('/store','ContactController@store')->name('store');
-            //         Route::get('/data', 'ContactController@data')->name('data');
-            //         Route::get('/tree', 'ContactController@tree')->name('tree');
-            //         Route::get('/{id}', 'ContactController@show')->name('show');
-            //         Route::get('/{id}/edit','ContactController@edit')->name('edit');
-            //         Route::post('/{id}/update','ContactController@update')->name('update');
-            //         Route::delete('/{id}/delete','ContactController@destroy')->name('delete');
-            //     });
+                Route::prefix('/contact')->name('contact.')->group(function () {
+                    Route::get('/', 'ContactController@index')->name('index');
+                    Route::get('/create', 'ContactController@create')->name('create');
+                    Route::post('/store','ContactController@store')->name('store');
+                    Route::get('/data', 'ContactController@data')->name('data');
+                    Route::get('/{id}/edit','ContactController@edit')->name('edit');
+                    Route::post('/{id}/update','ContactController@update')->name('update');
+                    Route::delete('/{id}/delete','ContactController@destroy')->name('delete');
+                });
 
-            // });
+            });
             
         });
 

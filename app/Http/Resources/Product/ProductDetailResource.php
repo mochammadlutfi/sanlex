@@ -5,6 +5,7 @@ namespace App\Http\Resources\Product;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\BaseResource;
+use App\Http\Resources\Product\ProductVariantResource;
 class ProductDetailResource extends JsonResource
 {
     /**
@@ -41,7 +42,7 @@ class ProductDetailResource extends JsonResource
             'pacakaging' => $this->pacakaging,
             'spesification' => $this->spesification,
             'description' => $this->description,
-            'variant' => $this->variant,
+            'variant' => ProductVariantResource::collection($this->variant),
         ];
     }
 }

@@ -33,10 +33,23 @@ Route::get('/healthcheck', function () {
 Route::namespace('App\Http\Controllers\API')->name('api.')->group(function () {
 
     Route::namespace('v1')->group(function () {
+        /**
+        * Customer Login
+        * 
+        * Melakukan autentikasi customer dan mengembalikan token akses.
+        * 
+        * @bodyParam email string required Email customer. Example: user@example.com
+        * @bodyParam password string required Password customer. Example: password123
+        * 
+        * @response 200 scenario="Login berhasil" {"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."}
+        * @response 401 scenario="Login gagal" {"message": "Unauthorized"}
+        * @responseField token Token akses yang digunakan untuk autentikasi.
+        */       
         Route::post('/login','AuthController@login')->name('login');
         Route::post('/logout','AuthController@logout')->name('logout');
 
         Route::middleware(['auth:sanctum'])->group(function () {
+
             Route::prefix('/profile')->name('profile.')->group(function () {
                 Route::get('/', 'ProfileController@index')->name('index');
                 Route::post('/update','ProfileController@update')->name('update');
@@ -45,9 +58,9 @@ Route::namespace('App\Http\Controllers\API')->name('api.')->group(function () {
                 Route::post('/device/disconect','ProfileController@deviceDisconnect')->name('device.disconect');
             });
             
-            Route::prefix('/product')->name('product.')->group(function () {
-                
+            Route::prefix('/product')->name('product.')->group(function () {    
                 Route::get('/', 'ProductController@index')->name('index');
+                Route::get('/top', 'ProductController@top')->name('top');
                 Route::get('/category', 'ProductController@category')->name('category');
                 Route::get('/brand', 'ProductController@brand')->name('brand');
                 Route::get('/{id}', 'ProductController@show')->name('show');
@@ -56,35 +69,30 @@ Route::namespace('App\Http\Controllers\API')->name('api.')->group(function () {
             
             Route::prefix('/cart')->name('cart.')->group(function () {
                 Route::get('/', 'CartController@index')->name('index');
-                Route::post('/store', 'CartController@category')->name('store');
-                Route::post('/increase', 'CartController@increase')->name('increase');
-                Route::post('/decrease', 'CartController@decrease')->name('decrease');
-                Route::delete('/delete', 'CartController@destroy')->name('delete');
+                Route::post('/store', 'CartController@store')->name('store');
+                Route::post('/{id}/increase', 'CartController@increase')->name('increase');
+                Route::post('/{id}/decrease', 'CartController@decrease')->name('decrease');
+                Route::delete('/{id}/delete', 'CartController@destroy')->name('delete');
             });
-        });
 
-        // Route::get('/certification', 'BaseController@certification')->name('certification');
-    
-        // Route::prefix('/product')->name('product.')->group(function () {
+            Route::prefix('/order')->name('order.')->group(function () {
+                Route::get('/', 'OrderController@index')->name('index');
+                Route::get('/store', 'OrderController@store')->name('store');
+                Route::get('/{id}', 'OrderController@show')->name('show');
+            });
+
+            Route::prefix('/payment')->name('payment.')->group(function () {
+                Route::get('/', 'PaymentController@index')->name('index');
+                Route::get('/store', 'PaymentController@store')->name('store');
+                Route::get('/{id}', 'PaymentController@show')->name('show');
+            });
             
-        //     Route::get('/', 'ProductController@index')->name('index');
-        //     Route::get('/category', 'ProductController@category')->name('category');
-        //     Route::get('/brand', 'ProductController@brand')->name('brand');
-        //     Route::get('/{id}', 'ProductController@show')->name('show');
-        // });
-        
-        // Route::prefix('/project')->name('project.')->group(function () {
-        //     Route::get('/', 'ProjectController@index')->name('index');
-        //     Route::get('/contact', 'ProjectController@contact')->name('contact');
-        //     Route::get('/{slug}', 'ProjectController@show')->name('show');
-        // });
-    
-        // Route::get('/branch', 'ReachController@branch')->name('branch');
-        // Route::get('/retail', 'ReachController@retail')->name('retail');
-    
-        // Route::prefix('/post')->name('post.')->group(function () {
-        //     Route::get('/', 'PostController@index')->name('index');
-        //     Route::get('/{slug}', 'PostController@show')->name('show');
-        // });
+            Route::prefix('/return')->name('return.')->group(function () {
+                Route::get('/', 'ReturnController@index')->name('index');
+                Route::get('/store', 'ReturnController@store')->name('store');
+                Route::get('/{id}', 'ReturnController@show')->name('show');
+            });
+
+        });
     });
 });

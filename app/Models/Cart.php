@@ -12,19 +12,17 @@ class Cart extends Model
 
 
     protected $fillable = [
-        'name', 'image'
+        
     ];
-
-    
     
     public function product()
     {
-        return $this->belongsTo(App\Models\Product\Product::class, 'product_id');
+        return $this->belongsTo(Product\Product::class, 'product_id');
     }
 
     
     public function variant()
     {
-        return $this->belongsTo(App\Models\Product\ProductVariant::class, 'variant_id');
+        return $this->belongsTo(Product\ProductVariant::class, 'variant_id');
     }
 }

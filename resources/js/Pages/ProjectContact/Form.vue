@@ -22,11 +22,25 @@
                     <el-row :gutter="16">
                         <el-col :md="12">
                             <el-form-item label="Nama" prop="name">
-                                <el-input v-model="form.name" placeholder="Masukan Nama Kantor Cabang"/>
+                                <el-input v-model="form.name" placeholder="Masukan Nama"/>
                             </el-form-item>
                             <el-form-item label="No Telepon">
                                 <el-input v-model="form.phone" placeholder="Masukan No Telpon"/>
                             </el-form-item>
+                            <el-form-item label="Fax" >
+                                <el-input v-model="form.fax" placeholder="Masukan No Fax"/>
+                            </el-form-item>
+                            <el-form-item label="Email" >
+                                <el-input v-model="form.email" placeholder="Masukan No Email"/>
+                            </el-form-item>
+                            <el-form-item label="Nama PIC" >
+                                <el-input v-model="form.pic_name" placeholder="Masukan Nama PIC"/>
+                            </el-form-item>
+                            <el-form-item label="No HP PIC">
+                                <el-input v-model="form.pic_phone" placeholder="Masukan No HP PIC"/>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :md="12">
                             <el-row :gutter="16">
                                 <el-col :md="12">
                                     <el-form-item label="Provinsi" prop="province">
@@ -42,8 +56,9 @@
                             <el-form-item label="Alamat Lengkap">
                                 <el-input type="textarea" :row="2" v-model="form.address" placeholder="Masukan No Telpon"/>
                             </el-form-item>
-                        </el-col>
-                        <el-col :md="12">
+                            <el-form-item label="Longtitude">
+                                <el-input v-model="form.lng" placeholder="Masukan Longtitude"/>
+                            </el-form-item>
                             <el-row :gutter="16">
                                 <el-col :md="12">
                                     <el-form-item label="Latitude">
@@ -56,31 +71,11 @@
                                     </el-form-item>
                                 </el-col>
                             </el-row>
-                            <el-row :gutter="16">
-                                <el-col :md="8">
-                                    <el-form-item label="Kode">
-                                        <el-input v-model="form.code"/>
-                                    </el-form-item>
-                                </el-col>
-                                <el-col :md="8">
-                                    <el-form-item label="Key">
-                                        <el-input v-model="form.key"/>
-                                    </el-form-item>
-                                </el-col>
-                                <el-col :md="8">
-                                    <el-form-item label="Ref">
-                                        <el-input v-model="form.ref"/>
-                                    </el-form-item>
-                                </el-col>
-                            </el-row>
-                            <el-form-item label="Server">
-                                <el-input v-model="form.server_link"/>
-                            </el-form-item>
                         </el-col>
                     </el-row>
 
                     <div class="flex">
-                        <el-button>
+                        <el-button :tag="Link" href="/project/contact">
                             <Icon icon="mingcute:close-fill" class="me-2"/>
                             {{ $t('common.cancel') }}
                         </el-button>
@@ -121,15 +116,16 @@ const form = ref({
     id : null,
     name : null,
     phone : null,
+    fax : null,
+    email : null,
+    pic_name : null,
+    pic_phone : null,
     province : null,
     city :null,
     address : null,
     postal_code : null,
     lat : null,
     lng :null,
-    code : null,
-    key : null,
-    server_link : null,
 });
 
 const formRules = ref({
@@ -159,7 +155,7 @@ const formRules = ref({
 });
 
 onMounted(() => {
-    title.value = props.data ? 'Ubah Cabang' : 'Buat Cabang Baru';
+    title.value = props.data ? 'Ubah Kontak' : 'Buat Kontak Baru';
 
     if(props.data){
         form.value.id = props.data.id;

@@ -23,7 +23,7 @@ class ContactController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        // $this->middleware('auth');
     }
 
     /**
@@ -50,53 +50,33 @@ class ContactController extends Controller
      */
     public function store(Request $request)
     {
-        $rules = [
-            'name' => 'required',
-            'address' => 'required',
-        ];
+        DB::beginTransaction();
+        try{
+                $data = new Contact();
+                $data->name = $request->name;
+                $data->province_id = $request->province ? $request->province['id'] : null;
+                $data->city_id = $request->city ? $request->city['id'] : null;
+                $data->postal_code = $request->postal_code;
+                $data->address = $request->address;
+                $data->phone = $request->phone;
+                $data->fax = $request->fax;
+                $data->email = $request->email;
+                $data->pic_name = $request->pic_name;
+                $data->pic_phone = $request->pic_phone;
+                $data->save();
 
-        $pesan = [
-            'name.required' => 'Nama Wajib Diisi!',
-            'address.required' => 'Alamat Wajib Diisi!',
-        ];
-
-        $validator = Validator::make($request->all(), $rules, $pesan);
-        if ($validator->fails()){
-            return back()->withErrors($validator->errors());
-        }else{
-            DB::beginTransaction();
-            try{
-                    $data = new Contact();
-                    $data->name = $request->name;
-                    $data->province_id = $request->provinsi_id;
-                    $data->city_id = $request->city_id;
-                    $data->postal_code = $request->postal_code;
-                    $data->address = $request->address;
-                    $data->phone = $request->phone;
-                    $data->fax = $request->fax;
-                    $data->email = $request->email;
-                    $data->pic_name = $request->pic_name;
-                    $data->pic_phone = $request->pic_phone;
-                    $data->save();
-
-            }catch(\QueryException $e){
-                DB::rollback();
-                return back();
-            }
-            DB::commit();
-            return redirect()->route('admin.project.contact.index');
+        }catch(\QueryException $e){
+            DB::rollback();
+            return response()->json([
+                'success' => false,
+                'result' => $e,
+            ], 422);
         }
-    }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
+        DB::commit();
+        return response()->json([
+            'success' => true,
+        ], 200);
     }
 
     /**
@@ -119,41 +99,33 @@ class ContactController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // dd($request->all());
-        $rules = [
-            'name' => 'required',
-        ];
+        DB::beginTransaction();
+        try{
+                $data = Contact::find($id);
+                $data->name = $request->name;
+                $data->province_id = $request->province ? $request->province['id'] : null;
+                $data->city_id = $request->city ? $request->city['id'] : null;
+                $data->postal_code = $request->postal_code;
+                $data->address = $request->address;
+                $data->phone = $request->phone;
+                $data->fax = $request->fax;
+                $data->email = $request->email;
+                $data->pic_name = $request->pic_name;
+                $data->pic_phone = $request->pic_phone;
+                $data->save();
 
-        $pesan = [
-            'name.required' => 'Nama Tugas Wajib Diisi!',
-        ];
-
-        $validator = Validator::make($request->all(), $rules, $pesan);
-        if ($validator->fails()){
-            return back()->withErrors($validator->errors());
-        }else{
-            DB::beginTransaction();
-            try{
-                    $data = Brand::where('id', $id)->first();
-                    $data->name = $request->name;
-                    if($request->hasFile('image')){
-                        if(!empty($data->image)){
-                            if(Storage::disk('public')->exists($data->image))
-                            {
-                                Storage::disk('public')->delete($data->image);
-                            }
-                        }
-                        $data->image = $this->uploadImage($request->file('image'));
-                    }
-                    $data->save();
-
-            }catch(\QueryException $e){
-                DB::rollback();
-                return back();
-            }
-            DB::commit();
-            return redirect()->route('admin.vehicle.brand.index');
+        }catch(\QueryException $e){
+            DB::rollback();
+            return response()->json([
+                'success' => false,
+                'result' => $e,
+            ], 422);
         }
+
+        DB::commit();
+        return response()->json([
+            'success' => true,
+        ], 200);
     }
 
     /**
@@ -166,66 +138,41 @@ class ContactController extends Controller
     {
         DB::beginTransaction();
         try{
-            
-            $data = Brand::where('id', $id)->first();
-            if(isset($data->image)){
-                $cek = Storage::disk('public')->exists($data->image);
-                if($cek)
-                {
-                    Storage::disk('public')->delete($data->image);
-                }
-            }
+
+            $data = Contact::where('id', $id)->first();
             $data->delete();
 
         }catch(\QueryException $e){
             DB::rollback();
-            dd($e);
+            return response()->json([
+                'success' => false,
+                'result' => $e,
+            ], 422);
         }
 
         DB::commit();
-        return redirect()->route('admin.vehicle.brand.index');
+        return response()->json([
+            'success' => true,
+        ], 200);
     }
 
-
-    private function uploadImage($file){
-
-        $file_name = uniqid() . '.' . $file->getClientOriginalExtension();
-
-        $imgFile = Image::make($file->getRealPath());
-
-        $destinationPath = storage_path('app/public/brands');
-        $return = '/uploads/brands/'.$file_name;
-
-        if (!file_exists($destinationPath)) {
-            mkdir($destinationPath, 755, true);
-        }
-
-        $width = 800;
-        $heigth = 800;
-
-        $imgFile->resize($width, $heigth, function ($constraint) {
-		    $constraint->aspectRatio();
-		})->save($destinationPath.'/'.$file_name, 90);
-
-        return $return;
-    }
-    
     public function data(Request $request)
     {
-        $page = $request->page;
         $sort = !empty($request->sort) ? $request->sort : 'id';
         $sortDir = !empty($request->sortDir) ? $request->sortDir : 'desc';
-        $limit = ($request->limit) ? $request->limit : 25;
-        $type = $request->type;
 
-        $data = Contact::orderBy($sort, $sortDir);
+        $query = Contact::with(['province', 'city'])->orderBy($sort, $sortDir);
 
-        if($page){
-            $output = $data->paginate($limit);
+        if($request->limit){
+            if($request->limit == 1){
+                $data = $query->first();
+            }else{
+                $data = $query->paginate($request->limit);
+            }
         }else{
-            $output = $data->get();
+            $data = $query->get();
         }
 
-        return response()->json($output);
+        return response()->json($data);
     }
 }

@@ -18,4 +18,15 @@ class Contact extends Model
         'name', 'pic', 'hp', 'telp',
     ];
 
+    public function province()
+    {
+        return $this->belongsTo(\App\Models\Daerah\Provinsi::class, 'province_id');
+    }
+
+
+    public function city()
+    {
+        return $this->belongsTo(\App\Models\Daerah\Kota::class, 'city_id');
+    }
+
 }

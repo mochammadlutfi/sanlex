@@ -36,8 +36,8 @@ class BranchController extends Controller
 
             $data = new Branch();
             $data->name = $request->name;
-            $data->province_id = $request->province_id;
-            $data->city_id = $request->city_id;
+            $data->province_id = $request->province ? $request->province['id'] : null;
+            $data->city_id = $request->city ? $request->city['id'] : null;
             $data->phone = $request->phone;
             $data->address = $request->address;
             $data->lat = $request->lat;
@@ -46,6 +46,7 @@ class BranchController extends Controller
             $data->code = $request->code;
             $data->ref = $request->ref;
             $data->server = $request->server_link;
+            $data->status = $request->status;
             $data->save();
 
         }catch(\QueryException $e){
@@ -69,8 +70,8 @@ class BranchController extends Controller
 
             $data = Branch::where('id', $id)->first();
             $data->name = $request->name;
-            $data->province_id = $request->province_id;
-            $data->city_id = $request->city_id;
+            $data->province_id = $request->province ? $request->province['id'] : null;
+            $data->city_id = $request->city ? $request->city['id'] : null;
             $data->phone = $request->phone;
             $data->address = $request->address;
             $data->lat = $request->lat;
@@ -79,6 +80,7 @@ class BranchController extends Controller
             $data->code = $request->code;
             $data->ref = $request->ref;
             $data->server = $request->server_link;
+            $data->status = $request->status;
             $data->save();
 
         }catch(\QueryException $e){
@@ -96,7 +98,7 @@ class BranchController extends Controller
     }
 
     public function edit($id){
-        $data = Branch::where('id', $id)->first();
+        $data = Branch::with(['province', 'city'])->where('id', $id)->first();
 
         return Inertia::render('Branch/Form',[
             'data' => $data

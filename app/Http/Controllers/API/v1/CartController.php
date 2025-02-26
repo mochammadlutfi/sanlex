@@ -4,16 +4,13 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 use App\Models\Cart;
-
+use App\Http\Resources\CartResource;
 class CartController extends Controller
 {
-
-    public function __construct()
-    {
-        $this->middleware('auth:api');
-    }
 
     /**
      * Display a listing of the resource.
@@ -22,11 +19,11 @@ class CartController extends Controller
      */
     public function index()
     {
-        dd('sasa');
         $user = auth()->user();
 
-        $data = Cart::where('user_id', $user->id)
-        ->get();
+        $data = CartResource::collection(Cart::with(['product', 'variant'])->where('customer_id', $user->id)
+        ->get());
+        
         
         return response()->json([
             'success' => true,
@@ -49,7 +46,7 @@ class CartController extends Controller
             $user = auth()->user();
 
             $data = new Cart();
-            $data->user_id = $user->id;
+            $data->customer_id = $user->id;
             $data->product_id = $request->product_id;
             $data->variant_id = $request->variant_id;
             $data->qty = $request->qty;

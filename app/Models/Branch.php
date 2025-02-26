@@ -15,25 +15,15 @@ class Branch extends Model
         'name', 'city_id', 'phone', 'postal_code', 'address', 'lat', 'lng'
     ];
 
-    // protected $appends = [
-    //     'daerah', 'dibuat'
-    // ];
+    public function province()
+    {
+        return $this->belongsTo(Daerah\Provinsi::class, 'province_id');
+    }
 
 
-    // public function city()
-    // {
-    //     return $this->belongsTo('App\Models\Kota', 'city_id');
-    // }
-
-    // public function getDaerahAttribute($value)
-    // {
-    //     return ucwords(strtolower($this->city->name)).'<br>'. ucwords(strtolower($this->city->provinsi->name));
-    // }
-
-    // public function getDibuatAttribute()
-    // {
-    //     Carbon::setLocale('id');
-    //     return Carbon::parse($this->attributes['created_at'])->translatedFormat('d F Y');
-    // }
+    public function city()
+    {
+        return $this->belongsTo(Daerah\Kota::class, 'city_id');
+    }
 
 }
