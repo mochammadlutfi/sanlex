@@ -77,19 +77,23 @@ Route::namespace('App\Http\Controllers\API')->name('api.')->group(function () {
 
             Route::prefix('/order')->name('order.')->group(function () {
                 Route::get('/', 'OrderController@index')->name('index');
-                Route::get('/store', 'OrderController@store')->name('store');
+                Route::post('/store', 'OrderController@store')->name('store');
                 Route::get('/{id}', 'OrderController@show')->name('show');
+            });
+
+            Route::prefix('/invoice')->name('invoice.')->group(function () {
+                Route::get('/', 'InvoiceController@index')->name('index');
+                Route::get('/{id}', 'InvoiceController@show')->name('show');
             });
 
             Route::prefix('/payment')->name('payment.')->group(function () {
                 Route::get('/', 'PaymentController@index')->name('index');
-                Route::get('/store', 'PaymentController@store')->name('store');
                 Route::get('/{id}', 'PaymentController@show')->name('show');
             });
             
             Route::prefix('/return')->name('return.')->group(function () {
                 Route::get('/', 'ReturnController@index')->name('index');
-                Route::get('/store', 'ReturnController@store')->name('store');
+                Route::post('/store', 'ReturnController@store')->name('store');
                 Route::get('/{id}', 'ReturnController@show')->name('show');
             });
 

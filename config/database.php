@@ -113,7 +113,7 @@ return [
         ],
 
         
-        'server18' => [
+        'orange' => [
             'driver' => 'pgsql',
             'url' => env('DATABASE_URL'),
             'host' => '10.180.184.18',

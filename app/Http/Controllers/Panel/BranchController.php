@@ -80,7 +80,6 @@ class BranchController extends Controller
             $data->code = $request->code;
             $data->ref = $request->ref;
             $data->server = $request->server_link;
-            $data->status = $request->status;
             $data->save();
 
         }catch(\QueryException $e){

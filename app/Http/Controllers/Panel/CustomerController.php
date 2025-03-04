@@ -36,17 +36,32 @@ class CustomerController extends Controller
 
             $data = new Customer();
             $data->name = $request->name;
-            $data->province_id = $request->province_id;
-            $data->city_id = $request->city_id;
+            $data->email = $request->email;
             $data->phone = $request->phone;
-            $data->address = $request->address;
-            $data->lat = $request->lat;
-            $data->lng = $request->lng;
-            $data->key = $request->key;
-            $data->code = $request->code;
+            $data->mobile = $request->mobile;
+            $data->branch_id = $request->branch_id;
+            $data->password = '12345';
             $data->ref = $request->ref;
-            $data->server = $request->server_link;
             $data->save();
+
+            if(count($request->address)){
+                foreach($request->address as $key => $value){    
+                    $address = CustomerAddress::firstOrNew([
+                        'customer_id' => $data->id,
+                        'prov_id' => $value['prov']['id'],
+                        'kota_id' => $value['kota']['id'],
+                        'kec_id' => $value['kec']['id'],
+                        'kel_id' => $value['kel']['id'],
+                        'address' =>  $value['address'],
+                        'lat' => $value['lat'],
+                        'lng' => $value['lng'],
+                        'is_main' => $value['is_main'] == 'true' ? 1 : 0,
+                        'pos' => $value['postal_code']
+                    ]);
+                    $address->save();
+
+                }
+            }
 
         }catch(\QueryException $e){
             DB::rollback();
@@ -75,6 +90,10 @@ class CustomerController extends Controller
             $data->branch_id = $request->branch_id;
             $data->ref = $request->ref;
             $data->save();
+
+            if(count($request->removeAddress)){
+                CustomerAddress::whereIn('id', $request->removeAddress)->delete();
+            }
 
             foreach($request->address as $key => $value){
 
